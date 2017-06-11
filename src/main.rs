@@ -29,9 +29,7 @@ fn combinations(n: usize, r: usize) -> AllCombos {
     if r == 1 {
         let c_items = (0..n).map(|i| CItem { vs: vec![i] }).collect();
         let combos = Combos { c_items: c_items };
-        let mut map = BTreeMap::new();
-        map.insert(r, combos);
-        AllCombos { map: map }
+        AllCombos::new(combos)
     } else {
         let all_combo_prev = combinations(n, r - 1);
         let combos_prev = all_combo_prev.map.get(&(r - 1)).unwrap();
@@ -58,6 +56,12 @@ struct AllCombos {
 }
 
 impl AllCombos {
+    fn new(combos: Combos) -> Self {
+        let mut map = BTreeMap::new();
+        map.insert(1, combos);
+        AllCombos { map: map }
+    }
+
     fn build<T: Clone>(&self, data: &Vec<T>) -> Vec<Vec<T>> {
         let mut result: Vec<Vec<T>> = vec![];
         for (_, combos) in self.map.iter() {
